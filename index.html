@@ -16,13 +16,20 @@
     --fog:#9aa0b0;
     --paper:#ece8df;
     --paper-dim:#c8c4ba;
-    --signal:#ff5a36;       /* signal orange */
-    --signal-2:#ffb38a;
-    --cool:#5fd0c4;          /* teal — for "uncertain" + secondary */
-    --gold:#e8b75a;
+    --signal:#2e9bff;        /* azure — primary accent (Build vibe) */
+    --signal-2:#8fd0ff;
+    --cool:#5fd0c4;          /* teal — for "uncertain" flags */
+    --gold:#ffb900;          /* MS yellow — caveat */
+    /* Microsoft Build brand palette */
+    --ms-blue:#00a4ef;
+    --ms-cyan:#50e6ff;
+    --ms-green:#7fba00;
+    --ms-yellow:#ffb900;
+    --ms-red:#f25022;
     --mono:'JetBrains Mono',ui-monospace,monospace;
     --disp:'Bricolage Grotesque',sans-serif;
     --serif:'Newsreader',Georgia,serif;
+    --ms-font:"Segoe UI Variable Display","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
@@ -51,34 +58,51 @@
   .wrap{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:0 28px}
 
   /* ---------- HERO ---------- */
-  header.hero{padding:78px 0 54px;border-bottom:1px solid var(--line);position:relative}
+  header.hero{padding:70px 0 50px;border-bottom:1px solid var(--line);position:relative}
+  .hero-top{display:grid;grid-template-columns:1fr minmax(0,340px);gap:36px;align-items:center}
   .kicker{
     font-family:var(--mono);font-size:12.5px;letter-spacing:.32em;text-transform:uppercase;
-    color:var(--signal);display:flex;gap:14px;align-items:center;
+    color:var(--ms-cyan);display:flex;gap:14px;align-items:center;
   }
-  .kicker::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,var(--signal),transparent)}
-  h1{
-    font-family:var(--disp);font-weight:800;line-height:.94;letter-spacing:-.02em;
-    font-size:clamp(48px,9.5vw,118px);margin:20px 0 8px;color:var(--paper);
+  .kicker::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,var(--ms-cyan),transparent)}
+  .conf{font-family:var(--ms-font);line-height:.9;margin:20px 0 4px}
+  .conf .ms{display:block;font-weight:400;font-size:clamp(19px,3vw,32px);letter-spacing:.04em;color:var(--paper);opacity:.9}
+  .conf .build{
+    display:inline-block;font-weight:700;font-size:clamp(56px,11vw,124px);letter-spacing:-.025em;
+    background:linear-gradient(100deg,var(--ms-blue) 2%,var(--ms-cyan) 26%,var(--ms-green) 52%,var(--ms-yellow) 76%,var(--ms-red) 99%);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;
   }
-  h1 .yr{color:transparent;-webkit-text-stroke:1.4px var(--paper-dim);text-stroke:1.4px var(--paper-dim)}
+  .conf .yr{font-family:var(--ms-font);font-weight:300;color:var(--ms-cyan);font-size:clamp(26px,5vw,56px);letter-spacing:.01em;margin-left:.18em;vertical-align:.06em}
   .thesis{
-    font-family:var(--serif);font-style:italic;font-size:clamp(20px,3vw,30px);
-    color:var(--paper-dim);max-width:30ch;line-height:1.32;margin-top:14px;
+    font-family:var(--serif);font-style:italic;font-size:clamp(19px,2.6vw,27px);
+    color:var(--paper-dim);max-width:34ch;line-height:1.32;margin-top:16px;
   }
-  .thesis b{font-style:normal;color:var(--signal);font-weight:500}
+  .thesis b{font-style:normal;color:var(--ms-cyan);font-weight:500}
+
+  /* hero visual */
+  .hero-visual{width:100%;height:auto;max-width:340px;justify-self:end;animation:float 7s ease-in-out infinite}
+  .hero-visual .nd{animation:pulse 4s ease-in-out infinite}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+  @keyframes pulse{0%,100%{opacity:.8;transform:scale(1)}50%{opacity:1;transform:scale(1.06)}}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* brand spectrum bar */
+  .spectrum{height:6px;border-radius:4px;margin:32px 0 0;overflow:hidden;
+    background:linear-gradient(90deg,var(--ms-blue) 0 24%,var(--ms-cyan) 24% 44%,var(--ms-green) 44% 64%,var(--ms-yellow) 64% 82%,var(--ms-red) 82% 100%);
+    box-shadow:0 0 24px -6px rgba(46,155,255,.5);}
+
   .meta{
-    margin-top:30px;display:flex;flex-wrap:wrap;gap:10px 26px;font-family:var(--mono);
+    margin-top:26px;display:flex;flex-wrap:wrap;gap:10px 26px;font-family:var(--mono);
     font-size:12px;color:var(--fog);letter-spacing:.04em;
   }
   .meta span{display:flex;align-items:center;gap:8px}
-  .meta .dot{width:6px;height:6px;border-radius:50%;background:var(--cool)}
+  .meta .dot{width:6px;height:6px;border-radius:50%;background:var(--ms-green)}
   .meta a{color:var(--fog);text-decoration:underline;text-underline-offset:3px}
 
   /* caveat */
   .caveat{
     margin:26px 0 0;padding:14px 18px;border:1px solid var(--line);border-left:3px solid var(--gold);
-    background:linear-gradient(90deg,rgba(232,183,90,.07),transparent);
+    background:linear-gradient(90deg,rgba(255,185,0,.08),transparent);
     font-size:14.5px;color:var(--paper-dim);font-family:var(--serif);border-radius:2px;
   }
   .caveat b{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:4px}
@@ -89,8 +113,15 @@
 
   /* ---------- SECTION ---------- */
   section{padding:56px 0 8px}
-  .sec-head{display:flex;align-items:baseline;gap:18px;margin-bottom:30px;flex-wrap:wrap}
-  .sec-num{font-family:var(--mono);font-size:12px;color:var(--signal);letter-spacing:.2em;padding-top:6px}
+  /* brand-color motif cycles per section */
+  .wrap > section:nth-of-type(1){--accent:var(--ms-blue)}
+  .wrap > section:nth-of-type(2){--accent:var(--ms-cyan)}
+  .wrap > section:nth-of-type(3){--accent:var(--ms-yellow)}
+  .wrap > section:nth-of-type(4){--accent:var(--ms-green)}
+  .wrap > section:nth-of-type(5){--accent:var(--ms-red)}
+  .sec-head{display:flex;align-items:center;gap:14px;margin-bottom:30px;flex-wrap:wrap}
+  .glyph{width:26px;height:26px;flex:none;color:var(--accent,var(--signal))}
+  .sec-num{font-family:var(--mono);font-size:12px;color:var(--accent,var(--signal));letter-spacing:.2em}
   .sec-title{font-family:var(--disp);font-weight:700;font-size:clamp(26px,4vw,40px);letter-spacing:-.015em;line-height:1}
   .sec-sub{font-family:var(--mono);font-size:11.5px;color:var(--fog);letter-spacing:.05em;margin-left:auto;align-self:center}
 
@@ -103,7 +134,7 @@
   }
   .card::before{
     content:"";position:absolute;left:0;top:0;height:100%;width:3px;
-    background:var(--signal);transform:scaleY(0);transform-origin:top;transition:transform .4s ease;
+    background:var(--accent,var(--signal));transform:scaleY(0);transform-origin:top;transition:transform .4s ease;
   }
   .card:hover{transform:translateY(-5px);border-color:#3a3d4d;box-shadow:0 18px 40px -22px rgba(0,0,0,.9)}
   .card:hover::before{transform:scaleY(1)}
@@ -115,47 +146,42 @@
   .card p{font-size:15.5px;line-height:1.55;color:var(--paper-dim)}
   .chip{
     display:inline-block;margin-top:14px;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;
-    color:var(--signal-2);border:1px solid rgba(255,90,54,.3);background:rgba(255,90,54,.06);
+    color:var(--accent,var(--signal));
+    border:1px solid color-mix(in srgb,var(--accent,var(--signal)) 38%,transparent);
+    background:color-mix(in srgb,var(--accent,var(--signal)) 9%,transparent);
     padding:3px 9px;border-radius:20px;
   }
-  .card.flag{grid-column:auto}
 
-  /* feature card (the agent stack hero item) */
+  /* feature card */
   .feature{
     grid-column:1/-1;background:
-      radial-gradient(120% 140% at 90% 0%,rgba(255,90,54,.10),transparent 55%),
+      radial-gradient(120% 140% at 90% 0%,color-mix(in srgb,var(--accent,var(--signal)) 14%,transparent),transparent 55%),
       linear-gradient(180deg,var(--panel),var(--ink2));
     border-color:#33353f;
   }
   .feature h3{font-size:25px}
   .feature .lead{font-family:var(--serif);font-style:italic;color:var(--signal-2);font-size:17px;margin-bottom:10px}
 
-  /* ---------- MATTERS ---------- */
+  /* ---------- THROUGHLINES ---------- */
   .matters{
     margin-top:64px;padding:42px 34px;border:1px solid var(--line);border-radius:9px;
+    --accent:var(--ms-green);
     background:
-      radial-gradient(100% 120% at 0% 0%,rgba(95,208,196,.08),transparent 60%),
+      radial-gradient(100% 120% at 0% 0%,rgba(127,186,0,.10),transparent 60%),
       var(--ink2);
   }
-  .matters .sec-num{color:var(--cool)}
   .matters h2{font-family:var(--disp);font-weight:700;font-size:clamp(24px,3.4vw,34px);letter-spacing:-.015em;margin-bottom:8px}
-  .matters .ml{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--cool)}
+  .matters .ml{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ms-green)}
   .mlist{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:22px 34px;margin-top:26px}
   .mlist h4{font-family:var(--disp);font-weight:600;font-size:17px;color:var(--paper);margin-bottom:6px;display:flex;gap:10px;align-items:center}
-  .mlist h4::before{content:"→";color:var(--cool);font-family:var(--mono);font-size:14px}
+  .mlist h4::before{content:"→";color:var(--ms-green);font-family:var(--mono);font-size:14px}
   .mlist p{font-size:15px;color:var(--paper-dim);line-height:1.5}
-
-  .boundary{
-    margin-top:26px;padding:13px 18px;border:1px dashed rgba(255,90,54,.4);border-radius:5px;
-    font-size:13.5px;color:var(--signal-2);font-family:var(--serif)
-  }
-  .boundary b{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--signal)}
 
   /* ---------- FOOTER ---------- */
   footer{margin:70px 0 50px;padding-top:26px;border-top:1px solid var(--line);
     display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;font-family:var(--mono);font-size:11.5px;color:var(--fog);letter-spacing:.04em}
   footer .sv{color:var(--paper-dim)}
-  footer a{color:var(--signal);text-decoration:none}
+  footer a{color:var(--ms-cyan);text-decoration:none}
 
   .legend{font-family:var(--mono);font-size:11px;color:var(--fog);margin-top:18px;display:flex;gap:8px;align-items:center}
   .legend .unc{font-size:11px}
@@ -163,7 +189,11 @@
   /* reveal animation */
   .reveal{opacity:0;transform:translateY(22px);animation:rise .7s cubic-bezier(.2,.8,.2,1) forwards}
   @keyframes rise{to{opacity:1;transform:none}}
-  @media (prefers-reduced-motion:reduce){.reveal{animation:none;opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){.reveal,.hero-visual,.hero-visual .nd{animation:none;opacity:1;transform:none}}
+  @media(max-width:820px){
+    .hero-top{grid-template-columns:1fr}
+    .hero-visual{max-width:260px;justify-self:start;margin-top:6px}
+  }
   @media(max-width:640px){body{font-size:17px}.meta{gap:8px 16px}.matters{padding:30px 20px}}
 </style>
 </head>
@@ -171,16 +201,55 @@
 <div class="wrap">
 
   <header class="hero">
-    <div class="kicker reveal">Signal Report · Developer Conference</div>
-    <h1 class="reveal" style="animation-delay:.05s">Microsoft<br>Build <span class="yr">2026</span></h1>
-    <p class="thesis reveal" style="animation-delay:.12s">The keynote had one throughline: <b>agents are the unit of execution</b> — and the whole stack is being rebuilt around them.</p>
-    <div class="meta reveal" style="animation-delay:.18s">
+    <div class="hero-top">
+      <div class="hero-lead">
+        <div class="kicker reveal">Signal Report · Developer Conference</div>
+        <h1 class="conf reveal" style="animation-delay:.05s">
+          <span class="ms">Microsoft</span>
+          <span class="build">Build<span class="yr">2026</span></span>
+        </h1>
+        <p class="thesis reveal" style="animation-delay:.12s">The keynote had one throughline: <b>agents are the unit of execution</b> — and the whole stack is being rebuilt around them.</p>
+      </div>
+      <svg class="hero-visual reveal" style="animation-delay:.18s" viewBox="0 0 340 300" role="img" aria-label="Abstract illustration of an agent connected to a network of services">
+        <defs>
+          <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="3.6" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <radialGradient id="core" cx="42%" cy="38%" r="65%">
+            <stop offset="0%" stop-color="#d7f1ff"/>
+            <stop offset="55%" stop-color="#00a4ef"/>
+            <stop offset="100%" stop-color="#0067b8"/>
+          </radialGradient>
+        </defs>
+        <g stroke="rgba(120,180,255,.30)" stroke-width="1.3">
+          <line x1="170" y1="150" x2="64" y2="66"/>
+          <line x1="170" y1="150" x2="292" y2="86"/>
+          <line x1="170" y1="150" x2="300" y2="206"/>
+          <line x1="170" y1="150" x2="176" y2="262"/>
+          <line x1="170" y1="150" x2="48" y2="200"/>
+        </g>
+        <g filter="url(#glow)">
+          <circle class="nd" cx="64"  cy="66"  r="10" fill="#00a4ef" style="animation-delay:0s"/>
+          <circle class="nd" cx="292" cy="86"  r="12" fill="#50e6ff" style="animation-delay:.6s"/>
+          <circle class="nd" cx="300" cy="206" r="9"  fill="#7fba00" style="animation-delay:1.2s"/>
+          <circle class="nd" cx="176" cy="262" r="11" fill="#ffb900" style="animation-delay:1.8s"/>
+          <circle class="nd" cx="48"  cy="200" r="8"  fill="#f25022" style="animation-delay:2.4s"/>
+        </g>
+        <circle cx="170" cy="150" r="27" fill="url(#core)" filter="url(#glow)"/>
+        <circle cx="170" cy="150" r="27" fill="none" stroke="#d7f1ff" stroke-opacity=".5" stroke-width="1"/>
+      </svg>
+    </div>
+
+    <div class="spectrum reveal" style="animation-delay:.22s"></div>
+
+    <div class="meta reveal" style="animation-delay:.26s">
       <span><span class="dot"></span>Opening Keynote · San Francisco</span>
       <span>2026·06·02</span>
       <span>Host: Satya Nadella</span>
       <span>Source: <a href="https://youtu.be/FFMm454fxNA">youtu.be/FFMm454fxNA</a></span>
     </div>
-    <div class="caveat reveal" style="animation-delay:.24s">
+    <div class="caveat reveal" style="animation-delay:.3s">
       <b>Provenance</b>
       Built from the live auto-caption transcript. The narrative and the <em>categories</em> of announcement are high-confidence; specific product names and numbers were often garbled by captioning and are marked <span class="unc" title="Caption was unreliable here — name/number not verified against Microsoft's official material">like this</span>. Nothing here is cross-checked against Microsoft's official press yet.
     </div>
@@ -189,6 +258,7 @@
   <!-- I. AGENT STACK -->
   <section>
     <div class="sec-head">
+      <svg class="glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 12l9 5 9-5"/><path d="M3 16.5l9 5 9-5"/></svg>
       <span class="sec-num">01</span>
       <h2 class="sec-title">The Agent Stack</h2>
       <span class="sec-sub">isolation · runtime · identity · security</span>
@@ -262,6 +332,7 @@
   <!-- II. INTELLIGENCE -->
   <section>
     <div class="sec-head">
+      <svg class="glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.66 3.58 3 8 3s8-1.34 8-3V6"/><path d="M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"/></svg>
       <span class="sec-num">02</span>
       <h2 class="sec-title">Intelligence &amp; Grounding</h2>
       <span class="sec-sub">context is the product</span>
@@ -285,6 +356,7 @@
   <!-- III. MODELS -->
   <section>
     <div class="sec-head">
+      <svg class="glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><circle cx="9.5" cy="9.5" r="6"/><circle cx="15" cy="15" r="6"/></svg>
       <span class="sec-num">03</span>
       <h2 class="sec-title">Models — MAI</h2>
       <span class="sec-sub">"your data is your moat"</span>
@@ -303,6 +375,7 @@
   <!-- IV. COMPUTE -->
   <section>
     <div class="sec-head">
+      <svg class="glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><rect x="6.5" y="6.5" width="11" height="11" rx="1.5"/><path d="M9.5 3v3M14.5 3v3M9.5 18v3M14.5 18v3M3 9.5h3M3 14.5h3M18 9.5h3M18 14.5h3"/></svg>
       <span class="sec-num">04</span>
       <h2 class="sec-title">Compute, Silicon &amp; Windows</h2>
       <span class="sec-sub">local intelligence + the dev box</span>
@@ -339,6 +412,7 @@
   <!-- V. FRONTIER -->
   <section>
     <div class="sec-head">
+      <svg class="glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="2"/><ellipse cx="12" cy="12" rx="10" ry="4.2"/><ellipse cx="12" cy="12" rx="10" ry="4.2" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4.2" transform="rotate(120 12 12)"/></svg>
       <span class="sec-num">05</span>
       <h2 class="sec-title">Frontier &amp; Science</h2>
       <span class="sec-sub">discovery + quantum</span>
