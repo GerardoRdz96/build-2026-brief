@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Microsoft Build 2026 — Signal Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0b0c10;
+    --ink2:#121319;
+    --panel:#16171f;
+    --line:#262833;
+    --fog:#9aa0b0;
+    --paper:#ece8df;
+    --paper-dim:#c8c4ba;
+    --signal:#ff5a36;       /* signal orange */
+    --signal-2:#ffb38a;
+    --cool:#5fd0c4;          /* teal — for "uncertain" + secondary */
+    --gold:#e8b75a;
+    --mono:'JetBrains Mono',ui-monospace,monospace;
+    --disp:'Bricolage Grotesque',sans-serif;
+    --serif:'Newsreader',Georgia,serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:var(--serif);
+    font-size:18px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  /* grain + grid atmosphere */
+  body::before{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:
+      linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px);
+    background-size:64px 64px;
+    mask-image:radial-gradient(ellipse 120% 80% at 50% 0%,#000 35%,transparent 78%);
+  }
+  body::after{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.4;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  }
+  .wrap{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:0 28px}
+
+  /* ---------- HERO ---------- */
+  header.hero{padding:78px 0 54px;border-bottom:1px solid var(--line);position:relative}
+  .kicker{
+    font-family:var(--mono);font-size:12.5px;letter-spacing:.32em;text-transform:uppercase;
+    color:var(--signal);display:flex;gap:14px;align-items:center;
+  }
+  .kicker::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,var(--signal),transparent)}
+  h1{
+    font-family:var(--disp);font-weight:800;line-height:.94;letter-spacing:-.02em;
+    font-size:clamp(48px,9.5vw,118px);margin:20px 0 8px;color:var(--paper);
+  }
+  h1 .yr{color:transparent;-webkit-text-stroke:1.4px var(--paper-dim);text-stroke:1.4px var(--paper-dim)}
+  .thesis{
+    font-family:var(--serif);font-style:italic;font-size:clamp(20px,3vw,30px);
+    color:var(--paper-dim);max-width:30ch;line-height:1.32;margin-top:14px;
+  }
+  .thesis b{font-style:normal;color:var(--signal);font-weight:500}
+  .meta{
+    margin-top:30px;display:flex;flex-wrap:wrap;gap:10px 26px;font-family:var(--mono);
+    font-size:12px;color:var(--fog);letter-spacing:.04em;
+  }
+  .meta span{display:flex;align-items:center;gap:8px}
+  .meta .dot{width:6px;height:6px;border-radius:50%;background:var(--cool)}
+  .meta a{color:var(--fog);text-decoration:underline;text-underline-offset:3px}
+
+  /* caveat */
+  .caveat{
+    margin:26px 0 0;padding:14px 18px;border:1px solid var(--line);border-left:3px solid var(--gold);
+    background:linear-gradient(90deg,rgba(232,183,90,.07),transparent);
+    font-size:14.5px;color:var(--paper-dim);font-family:var(--serif);border-radius:2px;
+  }
+  .caveat b{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:4px}
+  .unc{
+    border-bottom:1.5px dotted var(--cool);color:var(--cool);cursor:help;
+    font-family:var(--serif);
+  }
+
+  /* ---------- SECTION ---------- */
+  section{padding:56px 0 8px}
+  .sec-head{display:flex;align-items:baseline;gap:18px;margin-bottom:30px;flex-wrap:wrap}
+  .sec-num{font-family:var(--mono);font-size:12px;color:var(--signal);letter-spacing:.2em;padding-top:6px}
+  .sec-title{font-family:var(--disp);font-weight:700;font-size:clamp(26px,4vw,40px);letter-spacing:-.015em;line-height:1}
+  .sec-sub{font-family:var(--mono);font-size:11.5px;color:var(--fog);letter-spacing:.05em;margin-left:auto;align-self:center}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:16px}
+  .card{
+    position:relative;background:linear-gradient(180deg,var(--panel),var(--ink2));
+    border:1px solid var(--line);border-radius:7px;padding:22px 22px 24px;
+    transition:transform .35s cubic-bezier(.2,.8,.2,1),border-color .35s,box-shadow .35s;
+    overflow:hidden;
+  }
+  .card::before{
+    content:"";position:absolute;left:0;top:0;height:100%;width:3px;
+    background:var(--signal);transform:scaleY(0);transform-origin:top;transition:transform .4s ease;
+  }
+  .card:hover{transform:translateY(-5px);border-color:#3a3d4d;box-shadow:0 18px 40px -22px rgba(0,0,0,.9)}
+  .card:hover::before{transform:scaleY(1)}
+  .card .tnum{font-family:var(--mono);font-size:11px;color:var(--fog);letter-spacing:.12em}
+  .card h3{
+    font-family:var(--disp);font-weight:600;font-size:21px;line-height:1.12;letter-spacing:-.01em;
+    margin:9px 0 10px;color:var(--paper);
+  }
+  .card p{font-size:15.5px;line-height:1.55;color:var(--paper-dim)}
+  .chip{
+    display:inline-block;margin-top:14px;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;
+    color:var(--signal-2);border:1px solid rgba(255,90,54,.3);background:rgba(255,90,54,.06);
+    padding:3px 9px;border-radius:20px;
+  }
+  .card.flag{grid-column:auto}
+
+  /* feature card (the agent stack hero item) */
+  .feature{
+    grid-column:1/-1;background:
+      radial-gradient(120% 140% at 90% 0%,rgba(255,90,54,.10),transparent 55%),
+      linear-gradient(180deg,var(--panel),var(--ink2));
+    border-color:#33353f;
+  }
+  .feature h3{font-size:25px}
+  .feature .lead{font-family:var(--serif);font-style:italic;color:var(--signal-2);font-size:17px;margin-bottom:10px}
+
+  /* ---------- MATTERS ---------- */
+  .matters{
+    margin-top:64px;padding:42px 34px;border:1px solid var(--line);border-radius:9px;
+    background:
+      radial-gradient(100% 120% at 0% 0%,rgba(95,208,196,.08),transparent 60%),
+      var(--ink2);
+  }
+  .matters .sec-num{color:var(--cool)}
+  .matters h2{font-family:var(--disp);font-weight:700;font-size:clamp(24px,3.4vw,34px);letter-spacing:-.015em;margin-bottom:8px}
+  .matters .ml{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--cool)}
+  .mlist{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:22px 34px;margin-top:26px}
+  .mlist h4{font-family:var(--disp);font-weight:600;font-size:17px;color:var(--paper);margin-bottom:6px;display:flex;gap:10px;align-items:center}
+  .mlist h4::before{content:"→";color:var(--cool);font-family:var(--mono);font-size:14px}
+  .mlist p{font-size:15px;color:var(--paper-dim);line-height:1.5}
+
+  .boundary{
+    margin-top:26px;padding:13px 18px;border:1px dashed rgba(255,90,54,.4);border-radius:5px;
+    font-size:13.5px;color:var(--signal-2);font-family:var(--serif)
+  }
+  .boundary b{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--signal)}
+
+  /* ---------- FOOTER ---------- */
+  footer{margin:70px 0 50px;padding-top:26px;border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;font-family:var(--mono);font-size:11.5px;color:var(--fog);letter-spacing:.04em}
+  footer .sv{color:var(--paper-dim)}
+  footer a{color:var(--signal);text-decoration:none}
+
+  .legend{font-family:var(--mono);font-size:11px;color:var(--fog);margin-top:18px;display:flex;gap:8px;align-items:center}
+  .legend .unc{font-size:11px}
+
+  /* reveal animation */
+  .reveal{opacity:0;transform:translateY(22px);animation:rise .7s cubic-bezier(.2,.8,.2,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){.reveal{animation:none;opacity:1;transform:none}}
+  @media(max-width:640px){body{font-size:17px}.meta{gap:8px 16px}.matters{padding:30px 20px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div class="kicker reveal">Signal Report · Developer Conference</div>
+    <h1 class="reveal" style="animation-delay:.05s">Microsoft<br>Build <span class="yr">2026</span></h1>
+    <p class="thesis reveal" style="animation-delay:.12s">The keynote had one throughline: <b>agents are the unit of execution</b> — and the whole stack is being rebuilt around them.</p>
+    <div class="meta reveal" style="animation-delay:.18s">
+      <span><span class="dot"></span>Opening Keynote · San Francisco</span>
+      <span>2026·06·02</span>
+      <span>Host: Satya Nadella</span>
+      <span>Source: <a href="https://youtu.be/FFMm454fxNA">youtu.be/FFMm454fxNA</a></span>
+    </div>
+    <div class="caveat reveal" style="animation-delay:.24s">
+      <b>Provenance</b>
+      Built from the live auto-caption transcript. The narrative and the <em>categories</em> of announcement are high-confidence; specific product names and numbers were often garbled by captioning and are marked <span class="unc" title="Caption was unreliable here — name/number not verified against Microsoft's official material">like this</span>. Nothing here is cross-checked against Microsoft's official press yet.
+    </div>
+  </header>
+
+  <!-- I. AGENT STACK -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">01</span>
+      <h2 class="sec-title">The Agent Stack</h2>
+      <span class="sec-sub">isolation · runtime · identity · security</span>
+    </div>
+    <div class="grid">
+      <article class="card feature reveal">
+        <span class="tnum">FEATURED</span>
+        <h3>Agents become first-class infrastructure</h3>
+        <p class="lead">Not a feature bolted onto an app — the thing that runs the work, with an OS and a control plane built around it.</p>
+        <p>Microsoft framed an end-to-end agent platform: an OS-native isolation layer, a hosted runtime, a governance plane, and a security harness. The pieces below are the spine of the keynote.</p>
+      </article>
+
+      <article class="card reveal">
+        <span class="tnum">item 09 · [64:07]</span>
+        <h3>MXC — Microsoft Execution Containers</h3>
+        <p>OS-native policy and isolation for autonomous agents on Windows: process-level, session-level, and (for maximum isolation) Windows 365 for agents. The sandbox that makes letting an agent touch your machine safe.</p>
+        <span class="chip">OS-level agent isolation</span>
+      </article>
+
+      <article class="card reveal">
+        <span class="tnum">item 12 · [86:14]</span>
+        <h3>Foundry as an agent platform</h3>
+        <p>A runtime for long-running agents: memory, micro-VM-per-session sandboxes, apply-once guardrails (e.g. PII), <span class="unc" title="rubric evaluators auto-generated from production traces">auto-generated rubric evaluators</span>, and an <b style="color:var(--paper);font-weight:500">agent optimizer</b> that tunes instructions/tools and scores candidates. A <span class="unc" title="LangGraph">LangGraph</span> agent was deployed on stage.</p>
+        <span class="chip">evals + optimizer as platform</span>
+      </article>
+
+      <article class="card reveal">
+        <span class="tnum">item 13 · [85:42]</span>
+        <h3>Agent 365 — the control plane</h3>
+        <p>Per-agent identities and access controls, extended <b style="color:var(--paper);font-weight:500">Defender</b> for real-time defense and <b style="color:var(--paper);font-weight:500">Purview</b> for compliance. Multi-cloud (AWS, GCP), framework-agnostic. <span class="unc" title="captioned 'agent 265 SDK'">SDK GA</span>, expanding to local Windows agents.</p>
+        <span class="chip">identity + governance for agents</span>
+      </article>
+
+      <article class="card reveal">
+        <span class="tnum">item 11 · [76:26]</span>
+        <h3>GitHub Copilot app</h3>
+        <p>A dev + ops home base: parallel agent sessions via git worktrees, an <b style="color:var(--paper);font-weight:500">agent-merge</b> that babysits a PR through CI/review/merge, multi-model under one subscription, and cross-model review (one model checks another's code). Paired with the <span class="unc" title="'Rayfin' / 'Raefin' — agent-first backend-as-a-service SDK">Rayfin SDK</span> + a Replit partnership.</p>
+        <span class="chip">parallel agents · cross-model review</span>
+      </article>
+
+      <article class="card reveal">
+        <span class="tnum">item 14 · [92:19]</span>
+        <h3><span class="unc" title="'MDASH' — caption rendering">MDASH</span> — security harness</h3>
+        <p>A multi-agent security system orchestrating ~100+ specialized agents across frontier + custom models to find exploitable and AI-specific bugs single models miss. Standalone CLI + inside the Copilot app; <span style="font-family:var(--mono);font-size:13px;color:var(--cool)">defender details / fix</span>; GitHub Advanced Security integration.</p>
+        <span class="chip">100+ agents hunting bugs</span>
+      </article>
+
+      <article class="card reveal">
+        <span class="tnum">item 10 · [65:40]</span>
+        <h3><span class="unc" title="'Open Claw' — repeated caption rendering of the product">Open Claw</span> native on Windows</h3>
+        <p>Runs natively on Windows via MXC, with a companion app, sandboxed tool calls, granular folder/clipboard/internet permissions, and a pluggable harness (Copilot, Codex, …). Peter Steinberger announced the nonprofit <b style="color:var(--paper);font-weight:500">Open Claw Foundation</b> — "run it inside your company now."</p>
+        <span class="chip">sandboxed · pluggable harness</span>
+      </article>
+
+      <article class="card reveal">
+        <span class="tnum">item 15 · [101:08]</span>
+        <h3>Copilot super app + Autopilots</h3>
+        <p>By summer, chat + Cowork + code in one Copilot app. <b style="color:var(--paper);font-weight:500">Autopilots</b> are autonomous, in-tenant, compliant agents with a name, personality, connectors and memory. First out: <b style="color:var(--paper);font-weight:500">Scout</b> (Teams chats + Outlook threads).</p>
+        <span class="chip">in-tenant autonomous agents</span>
+      </article>
+
+      <article class="card reveal">
+        <span class="tnum">item 06 · [37:49]</span>
+        <h3>Project Solara — agent-first devices</h3>
+        <p>A turnkey platform for purpose-built devices that extend your agent: a stationary desk device (Windows Hello sign-in) and a wearable "access badge" (fingerprint, camera, mics, hands-free docs). AOSP-based, bring-your-own-agent. Explorers: Best Buy, Target, <span class="unc" title="'ak ue' — likely Accenture">Accenture</span>.</p>
+        <span class="chip">hardware for agents</span>
+      </article>
+    </div>
+  </section>
+
+  <!-- II. INTELLIGENCE -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">02</span>
+      <h2 class="sec-title">Intelligence &amp; Grounding</h2>
+      <span class="sec-sub">context is the product</span>
+    </div>
+    <div class="grid">
+      <article class="card reveal">
+        <span class="tnum">item 07 · [51:17]</span>
+        <h3>Microsoft IQ</h3>
+        <p>A unified grounding layer across Foundry, Fabric and M365. <b style="color:var(--paper);font-weight:500">Web IQ</b> (MCP-native web/news/media grounding), <b style="color:var(--paper);font-weight:500">Fabric IQ</b> (a live operational ontology of the business), and <b style="color:var(--paper);font-weight:500">Work IQ</b> (grounds answers in the org's own SharePoint, people and procedures, live).</p>
+        <span class="chip">MCP-native grounding</span>
+      </article>
+      <article class="card reveal">
+        <span class="tnum">item 08 · [53:21]</span>
+        <h3>New data services</h3>
+        <p>A ground-up <span class="unc" title="'Verizon DB' — caption clearly garbled; a managed Postgres service">managed Postgres</span> with HA scale-out, automated failover, 128 TB/cluster and a claimed ~3× throughput; plus a <b style="color:var(--paper);font-weight:500">GPU-accelerated Fabric</b> warehouse (claimed 7×).</p>
+        <span class="chip">data for agents</span>
+      </article>
+    </div>
+  </section>
+
+  <!-- III. MODELS -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">03</span>
+      <h2 class="sec-title">Models — MAI</h2>
+      <span class="sec-sub">"your data is your moat"</span>
+    </div>
+    <div class="grid">
+      <article class="card feature reveal">
+        <span class="tnum">item 16 · [106:11] · Mustafa Suleyman</span>
+        <h3>Seven new in-house models + Frontier Tuning</h3>
+        <p class="lead">"Humanist superintelligence" — and a way to make any org's private data the differentiator.</p>
+        <p>A MAI family across image, voice, transcription, reasoning and coding — <span class="unc" title="MAI Image 2.5 / 2.5 Flash">Image 2.5</span>, <span class="unc" title="MAI Transcribe 1.5 — claimed SOTA across 43 languages">Transcribe 1.5</span>, <span class="unc" title="MAI Voice 2 / Voice 2 Flash, watermarked">Voice 2</span>, <span class="unc" title="MAI Thinking 1 — 35B active MoE; raters preferred it over Sonnet 4.6">Thinking 1</span>, <span class="unc" title="MAI Code 1 Flash — ~5B coding model for VS Code + GitHub CLI">Code 1 Flash</span>. The headline tool is <b style="color:var(--paper);font-weight:500">Frontier Tuning</b>: build your own RL "hill-climbing machine" on your data so the models you train become your moat.</p>
+        <span class="chip">RL tuning on your own data</span>
+      </article>
+    </div>
+  </section>
+
+  <!-- IV. COMPUTE -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">04</span>
+      <h2 class="sec-title">Compute, Silicon &amp; Windows</h2>
+      <span class="sec-sub">local intelligence + the dev box</span>
+    </div>
+    <div class="grid">
+      <article class="card reveal">
+        <span class="tnum">item 01 · [03:25]</span>
+        <h3>On-device Windows AI</h3>
+        <p>Windows ML / Windows AI expanding to the full GPU install base, with local <span class="unc" title="captioned 'Ion-instruct' / 'Ion-plan'">reasoning + planning models</span> running on-device — a full local agentic loop with no cloud round-trip.</p>
+      </article>
+      <article class="card reveal">
+        <span class="tnum">item 02 · [05:11]</span>
+        <h3>Surface Ultra &amp; RTX DevBox</h3>
+        <p><b style="color:var(--paper);font-weight:500">Surface Ultra</b> (128 GB unified memory, ships fall) and a <b style="color:var(--paper);font-weight:500">Surface RTX "DevBox"</b> (~1 petaflop of AI compute, 128 GB unified memory) on next-gen NVIDIA + Intel + Qualcomm silicon.</p>
+      </article>
+      <article class="card reveal">
+        <span class="tnum">item 03 · [09:05]</span>
+        <h3>Windows on a desktop data center</h3>
+        <p>Windows coming to an NVIDIA <span class="unc" title="'GB300' / 'GP300'">DGX-class desktop</span> — a "desktop data center" that can run a ~1-trillion-parameter model locally.</p>
+      </article>
+      <article class="card reveal">
+        <span class="tnum">item 05 · [17:58]</span>
+        <h3>Azure + custom silicon</h3>
+        <p>500+ data centers and a near-zero-water "AI super-factory." New silicon: the <span class="unc" title="captioned 'Meyer 200'">Maia 200</span> accelerator and next-gen <span class="unc" title="'Cobalt 200'">Cobalt</span> CPUs tuned for agent workloads.</p>
+      </article>
+      <article class="card reveal">
+        <span class="tnum">item 04 · [10:06]</span>
+        <h3>Windows dev-experience overhaul</h3>
+        <p>An Intelligent Terminal with built-in Copilot, 70+ Linux/Unix CLI utilities native to Windows, <b style="color:var(--paper);font-weight:500">Homebrew on Windows</b>, first-class containers, WSL GPU improvements, a one-shot dev-setup config repo, and a vertical taskbar.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- V. FRONTIER -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">05</span>
+      <h2 class="sec-title">Frontier &amp; Science</h2>
+      <span class="sec-sub">discovery + quantum</span>
+    </div>
+    <div class="grid">
+      <article class="card reveal">
+        <span class="tnum">item 17 · [117:55]</span>
+        <h3>Mayo Clinic partnership</h3>
+        <p>Microsoft + Mayo Clinic to co-create a frontier model for healthcare, deployed in Mayo hospitals and beyond.</p>
+      </article>
+      <article class="card reveal">
+        <span class="tnum">item 18 · [129:44]</span>
+        <h3>Discovery GA + Majorana 2</h3>
+        <p><b style="color:var(--paper);font-weight:500">Microsoft Discovery</b> (an agentic scientific-discovery loop) went GA — demoed designing enzymes to recycle plastic. <b style="color:var(--paper);font-weight:500">Majorana 2</b> quantum chip: qubit lifetime ~1,000× longer than its predecessor, aiming at a million qubits on a credit-card-sized chip.</p>
+      </article>
+    </div>
+    <div class="legend">Legend: <span class="unc" title="example">dotted teal</span> = caption-uncertain term, hover to see what was heard.</div>
+  </section>
+
+  <!-- THROUGHLINES -->
+  <div class="matters reveal">
+    <div class="ml">Reading the room</div>
+    <h2>Five throughlines</h2>
+    <p style="color:var(--paper-dim);max-width:62ch">Strip the product names and the same handful of ideas show up again and again across the keynote.</p>
+    <div class="mlist">
+      <div>
+        <h4>Governance as a product</h4>
+        <p>MXC, Agent 365, Foundry guardrails — agent isolation, identity, and compliance are shipping as first-class platform features, not afterthoughts.</p>
+      </div>
+      <div>
+        <h4>Evals are graduating</h4>
+        <p>Auto-generated rubric evaluators plus an optimizer. Measuring whether an agent is actually good is moving into the core loop.</p>
+      </div>
+      <div>
+        <h4>Frameworks welcome</h4>
+        <p>A LangGraph agent was deployed to Foundry live on stage — the existing open agent frameworks sit squarely inside the platform story.</p>
+      </div>
+      <div>
+        <h4>Cross-model review</h4>
+        <p>One model reviewing another model's code showed up as a real workflow. Different perspectives catch mistakes a single one misses.</p>
+      </div>
+      <div>
+        <h4>Your data is the moat</h4>
+        <p>Frontier Tuning's thesis: the base model isn't the differentiator. What you ground it in and how you keep improving it on your own work is.</p>
+      </div>
+      <div>
+        <h4>MCP everywhere</h4>
+        <p>Web IQ is MCP-native and Foundry exposes a single MCP toolbox — the open tool-calling standard is now load-bearing.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="sv">Independent recap of a public keynote · not affiliated with Microsoft</div>
+    <div>18 announcements · transcript ~17.7k words · <a href="https://youtu.be/FFMm454fxNA">full source</a></div>
+  </footer>
+
+</div>
+
+<script>
+  // staggered reveal on scroll for cards
+  const io=new IntersectionObserver((es)=>{
+    es.forEach((e,i)=>{
+      if(e.isIntersecting){
+        e.target.style.animationDelay=(Math.min(i,6)*0.05)+'s';
+        e.target.classList.add('reveal');
+        io.unobserve(e.target);
+      }
+    });
+  },{threshold:.12});
+  document.querySelectorAll('.card,.matters').forEach(el=>{
+    if(!el.classList.contains('reveal')){el.style.opacity=0;io.observe(el);}
+  });
+</script>
+</body>
+</html>
