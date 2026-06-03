@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Microsoft Build 2026 — Day 2: What Actually Shipped for Developers</title>
+<meta name="description" content="A developer's field notes from Microsoft Build 2026 Day 2 — GitHub Copilot app & SDK, MAI Code Flash, and the cross-vendor rise of agent skills.">
+<style>
+  :root{
+    --bg:#0a0e16; --panel:#111725; --panel2:#0d1320; --ink:#e8edf5; --muted:#8a97ad;
+    --line:#1e2838; --accent:#5b9dff; --accent2:#7c5cff; --green:#3ad6a0; --amber:#ffb84d;
+    --pink:#ff6b9d; --chip:#172033;
+    --mono:"SF Mono",ui-monospace,"JetBrains Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;
+    background-image:radial-gradient(900px 500px at 80% -5%,rgba(124,92,255,.10),transparent),
+      radial-gradient(800px 500px at 0% 0%,rgba(91,157,255,.10),transparent);}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+  a{color:var(--accent);text-decoration:none}
+  header.hero{padding:72px 0 40px;border-bottom:1px solid var(--line)}
+  .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent)}
+  h1{font-size:clamp(34px,5.4vw,58px);line-height:1.04;letter-spacing:-.02em;margin:18px 0 14px;font-weight:760}
+  h1 .grad{background:linear-gradient(100deg,var(--accent),var(--accent2) 60%,var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lede{font-size:19px;color:var(--muted);max-width:780px}
+  .meta{margin-top:22px;display:flex;gap:10px;flex-wrap:wrap;font-family:var(--mono);font-size:12px}
+  .meta span{background:var(--chip);border:1px solid var(--line);color:var(--muted);padding:6px 11px;border-radius:999px}
+  section{padding:46px 0;border-bottom:1px solid var(--line)}
+  h2{font-size:13px;font-family:var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--accent2);margin-bottom:8px}
+  .h2sub{font-size:26px;font-weight:680;letter-spacing:-.01em;margin-bottom:24px}
+  .spine{background:linear-gradient(135deg,rgba(124,92,255,.14),rgba(91,157,255,.08));border:1px solid #2a3550;border-radius:18px;padding:28px}
+  .spine h3{font-size:22px;font-weight:700;letter-spacing:-.01em;margin-bottom:10px}
+  .spine p{color:#c3cde0}
+  .spine .tag{display:inline-block;font-family:var(--mono);font-size:11px;color:var(--accent);border:1px solid #234a7a;background:#0e1626;padding:3px 9px;border-radius:6px;margin-bottom:14px;letter-spacing:.08em}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;transition:.2s;position:relative;overflow:hidden}
+  .card:hover{border-color:#33415e;transform:translateY(-2px)}
+  .card .num{font-family:var(--mono);font-size:12px;color:var(--accent)}
+  .card h4{font-size:17px;margin:7px 0 8px;font-weight:660}
+  .card p{font-size:14.5px;color:var(--muted)}
+  .badge{position:absolute;top:14px;right:14px;font-family:var(--mono);font-size:10px;padding:3px 8px;border-radius:6px;letter-spacing:.06em}
+  .b-ga{background:#0e1a16;color:var(--green);border:1px solid #234}
+  .b-new{background:#1a160e;color:var(--amber);border:1px solid #432}
+  .concepts{display:grid;gap:14px}
+  .concept{background:var(--panel2);border-left:3px solid var(--accent2);border-radius:0 10px 10px 0;padding:14px 18px}
+  .concept b{color:var(--ink)} .concept span{color:var(--muted);font-size:14.5px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .block{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px}
+  .block h4{font-size:16px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+  .block ul{list-style:none;display:grid;gap:9px}
+  .block li{font-size:14px;color:var(--muted);padding-left:18px;position:relative}
+  .block li::before{content:"▸";position:absolute;left:0;color:var(--accent)}
+  .block li b{color:var(--ink);font-weight:600}
+  .stat{font-family:var(--mono);color:var(--amber)}
+  .takeaways{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+  .tk{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px}
+  .tk .n{font-family:var(--mono);font-size:26px;color:var(--accent2);font-weight:700}
+  .tk h4{font-size:16px;margin:6px 0 8px}
+  .tk p{font-size:14px;color:var(--muted)}
+  footer{padding:40px 0 70px;color:var(--muted);font-size:13px}
+  .caveat{background:#0e1626;border:1px solid #234a7a;border-radius:12px;padding:16px 18px;font-size:13px;color:#b9cdec;margin-bottom:24px}
+  .sig{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:10px}
+  @media(max-width:680px){.two{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <div class="kicker"><span class="dot"></span> Developer field notes · Microsoft Build 2026 · Day 2</div>
+  <h1>Build 2026, Day 2:<br><span class="grad">the developer-practice day</span></h1>
+  <p class="lede">If Day 1 was about the platform, Day 2 was about how we actually work. Two threads ran through every session: the <b style="color:#cfe0ff">GitHub Copilot agent stack became a full product family</b>, and — the bigger story — <b style="color:#cfe0ff">"agent skills" are becoming a cross-vendor standard</b>, with Google's Addy Osmani on the Microsoft stage describing the same model the whole industry is settling on.</p>
+  <div class="meta">
+    <span>Source: Microsoft Developer (official live stream)</span>
+    <span>Focus: GitHub Copilot · VS Code · Foundry</span>
+    <span>Format: live notes, lightly edited</span>
+  </div>
+</header>
+
+<section>
+  <h2>The big picture</h2>
+  <div class="h2sub">Why Day 2 mattered</div>
+  <div class="spine">
+    <div class="tag">THE THROUGHLINE</div>
+    <h3>The whole industry is converging on the same primitive: the agent skill.</h3>
+    <p>A skill is a small, reusable unit — a <b style="color:#fff">name, a description, and instructions an agent loads on demand</b> — that gives an agent new capabilities and works the same way across tools. Anthropic introduced the format; at Build, Google's Addy Osmani (author of the open-source <code>agent-skills</code> project and a contributor to Google's Agent Development Kit) presented the same model on Microsoft's stage. A portable skill standard across Claude Code, GitHub Copilot, and Google's ADK is a big deal: the workflows you build become reusable across every assistant, not locked to one vendor.</p>
+  </div>
+</section>
+
+<section>
+  <h2>What shipped</h2>
+  <div class="h2sub">The announcements that matter</div>
+  <div class="grid">
+    <div class="card">
+      <div class="num">01</div>
+      <h4>GitHub Copilot app</h4>
+      <p>An "agent-native desktop experience" — not an editor, not a CLI. It works like a session manager: run several agents in parallel, each isolated in its own git worktree, with the code intentionally in the background so you stay focused on outcomes. A grounded note from the panel: the realistic number of parallel agents is around three to four, not the "50 agents" you see on social media.</p>
+    </div>
+    <div class="card">
+      <span class="badge b-ga">GA 1.0</span>
+      <div class="num">02</div>
+      <h4>GitHub Copilot SDK</h4>
+      <p>Packages the agent runtime behind the Copilot CLI and app — the prompts, tools, and context loop — so you can embed it into any application. Available in six languages (Node, TypeScript, Python, Go, .NET, and now Rust and Java). The team is rewriting the runtime in Rust for performance. It already powers products like Office, Excel, and more inside Microsoft.</p>
+    </div>
+    <div class="card">
+      <span class="badge b-new">ROLLING OUT</span>
+      <div class="num">03</div>
+      <h4>MAI Code Flash</h4>
+      <p>Microsoft's first coding model built from scratch (not a fine-tune of someone else's). It's a fast, efficient model purpose-built for the Copilot workflow — understanding repository context, using tools, and making targeted edits — and it was trained with reinforcement learning against the real product so that training, evaluation, and production share one environment. Rolling out in the VS Code model picker.</p>
+    </div>
+    <div class="card">
+      <div class="num">04</div>
+      <h4>Copilot "Auto" model selection</h4>
+      <p>Picks the best available model for your task automatically, in real time, with zero configuration — across the IDE, the CLI, and the cloud. It takes the "which model should I even use, and what about the one that ships tomorrow?" decision off your plate.</p>
+    </div>
+    <div class="card">
+      <span class="badge b-new">UPDATED</span>
+      <div class="num">05</div>
+      <h4>GitHub Copilot CLI</h4>
+      <p>Built-in custom agents (explore, plan, code review) that compose with skills; parallel sessions you can switch between; an experimental "autopilot" loop; and a voice mode that runs on local models (including English and Spanish), so no cloud round-trip. Installable via Homebrew and WinGet with auto-update.</p>
+    </div>
+    <div class="card">
+      <div class="num">06</div>
+      <h4>TypeScript 7.0 ("TSGo")</h4>
+      <p>The TypeScript compiler has been ported from JavaScript to Go for native speed and multi-core parallelism — roughly a 10x speedup. On the VS Code codebase (about 1.5 million lines), a full build dropped from ~1m38s to ~10s. Already used in production at companies like Sentry, Slack, Notion, and Figma.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Patterns</h2>
+  <div class="h2sub">What good agentic engineering looks like now</div>
+  <div class="takeaways">
+    <div class="tk"><div class="n">01</div><h4>It's a spectrum</h4><p>Vibe coding sits at one end, disciplined spec-driven work at the other. The more diligence you apply, the further toward "agentic engineering" you are. Pick the point that matches the stakes — there's no single right answer.</p></div>
+    <div class="tk"><div class="n">02</div><h4>Skills follow the lifecycle</h4><p>The most useful skills map to define → plan → build → verify → review → ship. The same discipline teams already trust, now packaged so an agent can follow it.</p></div>
+    <div class="tk"><div class="n">03</div><h4>Review with a different model</h4><p>The CLI's review command runs multiple models (e.g. Sonnet, GPT, Gemini) and surfaces only the issues they agree on. Different training data catches different mistakes — don't let the model that wrote the code be the only one that checks it.</p></div>
+    <div class="tk"><div class="n">04</div><h4>The CLI is back</h4><p>"Your MCP server should probably just be a skill and a CLI." Agents are extremely good at using command-line tools, and skills load progressively, which keeps the context window lean. The honest caveat: authentication is where MCP still earns its place.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Going deeper</h2>
+  <div class="h2sub">Two engineering segments worth your time</div>
+  <div class="two">
+    <div class="block">
+      <h4>🧰 Models are not interchangeable</h4>
+      <ul>
+        <li>A "harness" is the system around the model — it edits files, runs the terminal, manages context, and loops. The model only returns tokens.</li>
+        <li>Every model has its own "personality," so the harness is <b>re-tuned per model</b>. Even within a family, behavior shifts; across vendors it shifts more, and they call tools differently.</li>
+        <li>The four things teams tune for each new model: <b>system prompt, available tools, context management, and the agent loop</b>.</li>
+        <li>Practical migration tip: when a new model lands, start from the previous model's prompt and iterate from there.</li>
+      </ul>
+    </div>
+    <div class="block">
+      <h4>📊 How to actually evaluate a model</h4>
+      <ul>
+        <li>Treat public benchmarks as <b>regression tests, not quality scores</b> — modern models saturate them.</li>
+        <li>Build your own internal benchmark of real tasks; run each model several times to average out non-determinism.</li>
+        <li>Score with a <b>"resolution rate"</b>: did the run hit a checklist of assertions for that task? <span class="stat">Yes → resolved.</span></li>
+        <li>Offline evals were called one of the highest-leverage tools for anyone building on top of these models. Worth digging into.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Lines worth keeping</h2>
+  <div class="h2sub">Quotes from the day</div>
+  <div class="concepts">
+    <div class="concept"><span><b>"Build your own assistant that works how you work."</b> Forget installing something that magically works out of the box. Build the workflow that fits you, and automate the simple things you do every day. That was called the most transformative step.</span></div>
+    <div class="concept"><span><b>"The tool you install matters less than the workflow you build around it."</b> Agent skills, and the various skill packs, are all useful — but the real work is assembling the workflow that fits your project, and it isn't the same across projects.</span></div>
+    <div class="concept"><span><b>"Cognitive debt / cognitive surrender."</b> The quiet risk of always deferring to whatever the model recommends. Stay in the driver's seat.</span></div>
+    <div class="concept"><span><b>Read the trajectory, not every line.</b> A useful rule of thumb: for a throwaway project, you don't need to read the code; for something you'll maintain for months, understand the architecture and read the core files.</span></div>
+  </div>
+</section>
+
+<footer>
+  <div class="caveat">These are personal notes taken live during the public Build 2026 Day 2 stream and lightly edited for sharing. They capture the themes and announcements as presented; for exact product names, version numbers, and benchmark figures, please check Microsoft's official Build 2026 materials.</div>
+  Microsoft Build 2026 · Day 2 · GitHub Copilot, VS Code &amp; Foundry
+  <div class="sig">Field notes · 2026-06-03</div>
+</footer>
+
+</div>
+</body>
+</html>
